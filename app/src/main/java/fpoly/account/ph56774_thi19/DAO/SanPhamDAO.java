@@ -30,7 +30,7 @@ public class SanPhamDAO {
             values.put(helper.COLUMN_CONTENT, sp.getContent());
             values.put(helper.COLUMN_DATE, sp.getDate());
             values.put(helper.COLUMN_STYLE, sp.getStyle());
-            values.put(helper.COLUMN_SRC, sp.getSrc()); // Thêm giá trị cho cột SRC
+            values.put(helper.COLUMN_SRC, sp.getSrc());
 
             long check = database.insert(helper.TABLE_SANPHAM_NAME, null, values);
             if (check != -1){
@@ -55,7 +55,7 @@ public class SanPhamDAO {
             values.put(helper.COLUMN_CONTENT, sp.getContent());
             values.put(helper.COLUMN_DATE, sp.getDate());
             values.put(helper.COLUMN_STYLE, sp.getStyle());
-            values.put(helper.COLUMN_SRC, sp.getSrc()); // Cập nhật giá trị cho cột SRC
+            values.put(helper.COLUMN_SRC, sp.getSrc());
 
             int rows = database.update(helper.TABLE_SANPHAM_NAME, values, helper.COLUMN_ID + " = ?", new String[]{String.valueOf(sp.getId())});
             if (rows > 0 ){
@@ -103,7 +103,7 @@ public class SanPhamDAO {
                     todoModel.setContent(cursor.getString(cursor.getColumnIndex(helper.COLUMN_CONTENT)));
                     todoModel.setDate(cursor.getString(cursor.getColumnIndex(helper.COLUMN_DATE)));
                     todoModel.setStyle(cursor.getString(cursor.getColumnIndex(helper.COLUMN_STYLE)));
-                    todoModel.setSrc(cursor.getString(cursor.getColumnIndex(helper.COLUMN_SRC))); // Lấy giá trị cột SRC
+                    todoModel.setSrc(cursor.getString(cursor.getColumnIndex(helper.COLUMN_SRC)));
                     lst.add(todoModel);
                 } while (cursor.moveToNext());
             }

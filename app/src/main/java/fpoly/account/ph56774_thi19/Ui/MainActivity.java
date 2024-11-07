@@ -1,6 +1,7 @@
 package fpoly.account.ph56774_thi19.Ui;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,22 +46,20 @@ public class MainActivity extends AppCompatActivity {
         dao = new SanPhamDAO(MainActivity.this);
         initView();
         lst = dao.getSP();
+
         adapter = new Adapter(MainActivity.this, lst);
-        // Lấy dữ liệu từ DB
         loadData();
-
-        // Cài đặt adapter cho RecyclerView
         setAdapter();
-
-        // Thêm sự kiện cho nút Add
+//        rcvSP.setOnTouchListener((view, motionEvent) -> {
+//
+//
+//        });
         addData();
-
-        // Thêm sự kiện cho nút Update và Delete
         updateData();
         deleteData();
         SlideInDownAnimator animator = new SlideInDownAnimator();
-        animator.setAddDuration(1000); // Thời gian hiệu ứng khi thêm item
-        animator.setRemoveDuration(1000); // Thời gian hiệu ứng khi xóa item
+        animator.setAddDuration(1000);
+        animator.setRemoveDuration(1000);
         rcvSP.setItemAnimator(animator);
     }
 
@@ -84,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
                 String content = edtContent.getText().toString();
                 String date = edtDate.getText().toString();
                 String type = edtStyle.getText().toString();
-                String src = edtSrc.getText().toString(); // Lấy giá trị từ EditText src
+                String src = edtSrc.getText().toString();
 
-                if (validateInput(title, content, date, type, src)) { // Kiểm tra giá trị của src
+                if (validateInput(title, content, date, type, src)) {
                     SanPham todoModel = new SanPham(title, content, date, type, src, 0);
                     if (dao.add(todoModel)) {
                         lst.add(todoModel);
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateData() {
         btnUpdate.setOnClickListener(v -> {
+
             if (selectedSanPham != null) {
                 String title = edtTitle.getText().toString();
                 String content = edtContent.getText().toString();
@@ -111,19 +111,17 @@ public class MainActivity extends AppCompatActivity {
 
                 SanPham updatedSanPham = new SanPham(title, content, date, style, src, selectedSanPham.getId());
                 if (dao.update(updatedSanPham)) {
-                    // Cập nhật sản phẩm trong danh sách và notify adapter
+
                     int position = lst.indexOf(selectedSanPham);
-                    lst.set(position, updatedSanPham);
-                    adapter.notifyItemChanged(position);
-                    clearInputFields();  // Làm sạch các trường nhập
-                    selectedSanPham = null;  // Reset sản phẩm đã chọn
-                } else {
-                    Toast.makeText(getApplicationContext(), "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
-                }
+                    if (position != -1) {
+                        lst.set(position, updatedSanPham);
+                        adapter.notifyItemChanged(position); }
+                    clearInputFields();
+                    selectedSanPham = null;
+                } else { Toast.makeText(getApplicationContext(), "Cập nhật thất bại!", Toast.LENGTH_SHORT).show(); }
             }
         });
     }
-
     private void deleteData() {
         btnDelete.setOnClickListener(v -> {
             if (selectedSanPham != null) {
@@ -132,15 +130,17 @@ public class MainActivity extends AppCompatActivity {
                         .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này?")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             if (dao.delete(selectedSanPham.getId())) {
-                                // Xóa sản phẩm trong danh sách và notify adapter
-                                lst.remove(selectedSanPham);
-                                adapter.notifyDataSetChanged();
-                                clearInputFields();  // Làm sạch các trường nhập
-                                selectedSanPham = null;  // Reset sản phẩm đã chọn
+                                int position = lst.indexOf(selectedSanPham);
+                                if (position != -1) { lst.remove(position);
+                                    adapter.notifyItemRemoved(position);
+                                }
+                                clearInputFields();
+                                selectedSanPham = null;
                                 Toast.makeText(getApplicationContext(), "Xóa thành công!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Xóa thất bại!", Toast.LENGTH_SHORT).show();
                             }
+
                         })
                         .setNegativeButton(android.R.string.no, null)
                         .show();
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         lst.clear();
-        lst.addAll(dao.getSP());  // Lấy danh sách sản phẩm từ cơ sở dữ liệu
+        lst.addAll(dao.getSP());
         adapter.notifyDataSetChanged();
     }
 
@@ -178,5 +178,6 @@ public class MainActivity extends AppCompatActivity {
             edtStyle.setText(sanPham.getStyle());
             edtSrc.setText(sanPham.getSrc());
         });
+
     }
 }

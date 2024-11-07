@@ -36,6 +36,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     }
 
     @Override
+    public long getItemId(int position) {
+        return lst.get(position).getId();
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         SanPham sanPham = lst.get(position);
         holder.txtContent.setText(sanPham.getContent());
@@ -45,7 +50,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
 
         Picasso.get().load(sanPham.getSrc()).into(holder.imgAvatar);
 
-        // Set up the click listener for the item
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(sanPham);
@@ -53,7 +57,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
         });
 
     }
-
+    int position ;
     @Override
     public int getItemCount() {
         return lst.size();
